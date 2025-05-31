@@ -182,9 +182,4 @@ La solución incluye dos aplicaciones:
 📧 Para soporte, dudas o sugerencias:
 
 - **Email:** soporte@owtunnel.com  
-- **Documentación oficial y repositorio:**  
-  [https://github.com/mike-educantabria/OWTunnel](https://github.com/mike-educantabria/OWTunnel)
-
----
-
-> 💡 *¡Gracias por usar OWTunnel! Tu privacidad y seguridad siempre primero.*  
+- **Documentación oficial y repositorio:** [https://github.com/mike-educantabria/OWTunnel](https://github.com/mike-educantabria/OWTunnel)
