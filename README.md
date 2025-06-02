@@ -121,7 +121,7 @@ La solución incluye dos aplicaciones:
 ### Pantallas principales (gestión)
 
 #### 1. Dashboard administrativo
-![Dashboard administración](images/images9.png)
+![Dashboard administración](images/image9.png)
 - Vistas de usuarios totales, conexiones activas y estadísticas principales 📊
 - Accede al registro de actividad administrativa
 
