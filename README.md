@@ -51,57 +51,50 @@ La solución incluye dos aplicaciones:
 
 ### Pantallas principales y funciones
 
-#### 1. Pantalla de Bienvenida y Registro  
-![Pantalla de registro](img/registro.png)  
+#### 1. Pantalla de Bienvenida y Registro
+![Pantalla de registro](images/image1.png)
 *Regístrate fácilmente con tu email y contraseña. Recibe un correo de activación para mayor seguridad.*
 
-#### 2. Inicio de Sesión  
-![Pantalla de inicio de sesión](img/login.png)  
+#### 2. Inicio de Sesión
+![Pantalla de inicio de sesión](images/image2.png)
 *Introduce tus datos para acceder o utiliza el enlace de recuperación si lo necesitas.*
 
-#### 3. Recuperación y cambio de contraseña  
-![Pantalla de recuperación de contraseña](img/recuperar.png)  
+#### 3. Recuperación y cambio de contraseña
+![Pantalla de recuperación de contraseña](images/image3.png)
+![Pantalla de cambio de contraseña](images/image4.png)
 *Solicita la recuperación introduciendo tu correo. Recibe un enlace y elige nueva contraseña.*
 
-#### 4. Dashboard Principal  
-![Dashboard principal](img/dashboard.png)  
-- Estado de conexión VPN (Conectado / Desconectado) 🟢🔴  
-- IP virtual asignada  
-- Botón grande para Conectar / Desconectar  
-- Lista de servidores por país/carga  
-- Selección automática del servidor más rápido 🚀  
+#### 4. Dashboard Principal
+![Dashboard principal](images/image5.png)
+- Estado de conexión VPN (Conectado / Desconectado) 🟢🔴
+- IP virtual asignada
+- Botón grande para Conectar / Desconectar
+- Lista de servidores por país/carga
 - Acceso rápido al menú de ajustes ⚙️
-
-#### 5. Selección de Servidor  
-![Lista de servidores](img/servidores.png)  
 *Elige manualmente el país/ciudad o deja que la app seleccione el mejor por ti (según latencia y carga).*
 
-#### 6. Gestión de Suscripción  
-![Gestión de suscripción](img/suscripcion.png)  
-- Consulta tu plan actual 🏷️  
-- Cambia de plan cuando lo necesites  
-- Activa o desactiva la renovación automática  
+#### 5. Gestión de Suscripción
+![Gestión de suscripción](images/image6.png)
+- Consulta tu plan actual 🏷️
+- Cambia de plan cuando lo necesites
+- Activa o desactiva la renovación automática
 - Realiza pagos seguros (tarjeta, PayPal, etc.) 💳
 
-#### 7. Ajustes y Cuenta  
-![Ajustes y perfil](img/ajustes.png)  
-- Cambia idioma (español/inglés) 🌐  
-- Cambia el tema visual (oscuro/claro) 🌗  
-- Gestiona notificaciones, privacidad y seguridad  
+#### 6. Cuenta y Ajustes
+![Modificar Cuenta](images/image7.png)
+![Modificar Ajustes](images/image8.png)
+- Gestiona notificaciones, privacidad y seguridad
 - Edita tus datos personales y contraseña 📝
-
-#### 8. Historial de Conexiones  
-![Historial de conexiones](img/historial.png)  
-- Consulta sesiones anteriores: fecha, servidor, duración  
-- Exporta el historial a PDF o CSV 📄
+- Cambia el tema visual (oscuro/claro) 🌗
+- Cambia idioma (español/inglés) 🌐
 
 ---
 
 ### Registro e inicio de sesión
 
-1. **Registrarse:**  
+1. **Registrarse:**
    - Pulsa en “Registrarse”, completa tus datos y revisa tu correo para activación.
-2. **Inicio de sesión:**  
+2. **Inicio de sesión:**
    - Introduce tus credenciales. Si olvidas tu contraseña, haz clic en “¿Olvidaste tu contraseña?” y sigue los pasos.
 
 ### Gestión de suscripción y ajustes
@@ -127,33 +120,33 @@ La solución incluye dos aplicaciones:
 
 ### Pantallas principales (gestión)
 
-#### 1. Dashboard administrativo  
-![Dashboard administración](img/admin_dashboard.png)  
+#### 1. Dashboard administrativo
+![Dashboard administración](img/admin_dashboard.png)
 - Vistas de usuarios totales, conexiones activas y estadísticas principales 📊
 
-#### 2. Gestión de Usuarios  
-![Gestión de usuarios](img/gestion_usuarios.png)  
-- Busca, edita, bloquea o elimina usuarios  
+#### 2. Gestión de Usuarios
+![Gestión de usuarios](img/gestion_usuarios.png)
+- Busca, edita, bloquea o elimina usuarios
 - Asigna roles: Usuario, Soporte o Administrador
 
-#### 3. Gestión de Suscripciones  
-![Gestión de suscripciones](img/gestion_suscripciones.png)  
-- Lista de suscripciones activas, pendientes o expiradas  
+#### 3. Gestión de Suscripciones
+![Gestión de suscripciones](img/gestion_suscripciones.png)
+- Lista de suscripciones activas, pendientes o expiradas
 - Cambia estado, crea planes, modifica precios o moneda
 
-#### 4. Gestión de Pagos  
-![Gestión de pagos](img/gestion_pagos.png)  
-- Revisa transacciones, estados y métodos de pago  
+#### 4. Gestión de Pagos
+![Gestión de pagos](img/gestion_pagos.png)
+- Revisa transacciones, estados y métodos de pago
 - Procesa reembolsos si es necesario
 
-#### 5. Gestión de Servidores VPN  
-![Gestión de servidores](img/gestion_servidores.png)  
-- Añade, edita o elimina servidores  
+#### 5. Gestión de Servidores VPN
+![Gestión de servidores](img/gestion_servidores.png)
+- Añade, edita o elimina servidores
 - Consulta estado, carga y tipo (gratuito/premium)
 
-#### 6. Panel de Métricas y Actividad  
-![Panel de métricas](img/metricas.png)  
-- Visualiza métricas globales del sistema  
+#### 6. Panel de Métricas y Actividad
+![Panel de métricas](img/metricas.png)
+- Visualiza métricas globales del sistema
 - Accede al registro de actividad administrativa
 
 ---
@@ -181,5 +174,5 @@ La solución incluye dos aplicaciones:
 
 📧 Para soporte, dudas o sugerencias:
 
-- **Email:** soporte@owtunnel.com  
+- **Email:** soporte@owtunnel.com
 - **Documentación oficial y repositorio:** [https://github.com/mike-educantabria/OWTunnel](https://github.com/mike-educantabria/OWTunnel)
