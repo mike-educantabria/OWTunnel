@@ -53,25 +53,25 @@ La solución incluye dos aplicaciones:
 
 #### 1. Pantalla de Bienvenida y Registro
 ![Pantalla de registro](images/image1.png)
-*Regístrate fácilmente con tu email y contraseña. Recibe un correo de activación para mayor seguridad.*
+<br>*Regístrate fácilmente con tu email y contraseña. Recibe un correo de activación para mayor seguridad.*
 
 #### 2. Inicio de Sesión
 ![Pantalla de inicio de sesión](images/image2.png)
-*Introduce tus datos para acceder o utiliza el enlace de recuperación si lo necesitas.*
+<br>*Introduce tus datos para acceder o utiliza el enlace de recuperación si lo necesitas.*
 
 #### 3. Recuperación y cambio de contraseña
 ![Pantalla de recuperación de contraseña](images/image3.png)
 ![Pantalla de cambio de contraseña](images/image4.png)
-*Solicita la recuperación introduciendo tu correo. Recibe un enlace y elige nueva contraseña.*
+<br>*Solicita la recuperación introduciendo tu correo. Recibe un enlace y elige nueva contraseña.*
 
 #### 4. Dashboard Principal
 ![Dashboard principal](images/image5.png)
+<br>*Elige manualmente el país/ciudad.*
 - Estado de conexión VPN (Conectado / Desconectado) 🟢🔴
 - IP virtual asignada
 - Botón grande para Conectar / Desconectar
 - Lista de servidores por país/carga
 - Acceso rápido al menú de ajustes ⚙️
-*Elige manualmente el país/ciudad o deja que la app seleccione el mejor por ti (según latencia y carga).*
 
 #### 5. Gestión de Suscripción
 ![Gestión de suscripción](images/image6.png)
@@ -121,33 +121,29 @@ La solución incluye dos aplicaciones:
 ### Pantallas principales (gestión)
 
 #### 1. Dashboard administrativo
-![Dashboard administración](img/admin_dashboard.png)
+![Dashboard administración](images/images9.png)
 - Vistas de usuarios totales, conexiones activas y estadísticas principales 📊
+- Accede al registro de actividad administrativa
 
 #### 2. Gestión de Usuarios
-![Gestión de usuarios](img/gestion_usuarios.png)
+![Gestión de usuarios](images/image10.png)
 - Busca, edita, bloquea o elimina usuarios
 - Asigna roles: Usuario, Soporte o Administrador
 
 #### 3. Gestión de Suscripciones
-![Gestión de suscripciones](img/gestion_suscripciones.png)
+![Gestión de suscripciones](images/image11.png)
 - Lista de suscripciones activas, pendientes o expiradas
 - Cambia estado, crea planes, modifica precios o moneda
 
 #### 4. Gestión de Pagos
-![Gestión de pagos](img/gestion_pagos.png)
+![Gestión de pagos](images/image12.png)
 - Revisa transacciones, estados y métodos de pago
 - Procesa reembolsos si es necesario
 
 #### 5. Gestión de Servidores VPN
-![Gestión de servidores](img/gestion_servidores.png)
+![Gestión de servidores](images/image13.png)
 - Añade, edita o elimina servidores
 - Consulta estado, carga y tipo (gratuito/premium)
-
-#### 6. Panel de Métricas y Actividad
-![Panel de métricas](img/metricas.png)
-- Visualiza métricas globales del sistema
-- Accede al registro de actividad administrativa
 
 ---
 
