@@ -1,5 +1,5 @@
 {
-	"name": "owtunnel-panel",
+	"name": "owtunnel-management-panel",
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",
@@ -86,8 +86,8 @@
 		"vite": "^5.2.10"
 	},
 	"build": {
-		"appId": "com.owtunnel.panel",
-		"productName": "OWTunnel Panel",
+		"appId": "com.owtunnel.management-panel",
+		"productName": "OWTunnel Management Panel",
 		"asar": false,
 		"directories": {
 			"buildResources": "assets",
