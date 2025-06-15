@@ -93,8 +93,8 @@ class LoginAttemptControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sampleRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.ipAddress").value("192.168.1.1"))
-                .andExpect(jsonPath("$.attemptCount").value(3));
+                .andExpect(jsonPath("$.ip_address").value("192.168.1.1"))
+                .andExpect(jsonPath("$.attempt_count").value(3));
     }
 
     @Test
@@ -105,7 +105,7 @@ class LoginAttemptControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sampleRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.attemptCount").value(3));
+                .andExpect(jsonPath("$.attempt_count").value(3));
     }
 
     @Test

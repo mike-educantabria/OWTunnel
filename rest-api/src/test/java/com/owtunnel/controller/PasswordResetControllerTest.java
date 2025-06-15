@@ -90,8 +90,8 @@ class PasswordResetControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sampleRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.userId").value(1))
-                .andExpect(jsonPath("$.resetToken").value("abc123xyz"));
+                .andExpect(jsonPath("$.user_id").value(1))
+                .andExpect(jsonPath("$.reset_token").value("abc123xyz"));
     }
 
     @Test
@@ -102,7 +102,7 @@ class PasswordResetControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sampleRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userId").value(1));
+                .andExpect(jsonPath("$.user_id").value(1));
     }
 
     @Test

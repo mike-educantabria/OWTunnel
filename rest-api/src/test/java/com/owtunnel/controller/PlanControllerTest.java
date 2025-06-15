@@ -110,7 +110,7 @@ class PlanControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sampleRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.durationDays").value(30));
+                .andExpect(jsonPath("$.duration_days").value(30));
     }
 
     @Test

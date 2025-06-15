@@ -63,6 +63,7 @@ class SubscriptionControllerTest {
         sampleRequest.setUserId(1L);
         sampleRequest.setPlanId(2L);
         sampleRequest.setAutoRenew(true);
+        sampleRequest.setExpiresAt(LocalDateTime.now().plusMonths(1));
 
         sampleResponse = new SubscriptionResponse();
         sampleResponse.setId(1L);
@@ -71,6 +72,7 @@ class SubscriptionControllerTest {
         sampleResponse.setCreatedAt(LocalDateTime.now());
         sampleResponse.setUpdatedAt(LocalDateTime.now());
         sampleResponse.setAutoRenew(true);
+        sampleResponse.setExpiresAt(sampleRequest.getExpiresAt());
     }
 
     @Test
@@ -99,7 +101,7 @@ class SubscriptionControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sampleRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.userId").value(1));
+                .andExpect(jsonPath("$.user_id").value(1));
     }
 
     @Test
@@ -110,7 +112,7 @@ class SubscriptionControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sampleRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.planId").value(2));
+                .andExpect(jsonPath("$.plan_id").value(2));
     }
 
     @Test

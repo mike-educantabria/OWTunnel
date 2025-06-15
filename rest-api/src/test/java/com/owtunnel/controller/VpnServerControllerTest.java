@@ -117,7 +117,7 @@ class VpnServerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sampleRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.ipAddress").value("192.168.1.1"));
+                .andExpect(jsonPath("$.ip_address").value("192.168.1.1"));
     }
 
     @Test
