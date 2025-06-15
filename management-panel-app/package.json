@@ -87,7 +87,7 @@
 	},
 	"build": {
 		"appId": "com.owtunnel.management-panel",
-		"productName": "OWTunnel Management Panel",
+		"productName": "OWTunnel Panel",
 		"directories": {
 			"buildResources": "assets",
 			"output": "release"
