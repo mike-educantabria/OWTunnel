@@ -19,12 +19,14 @@ function createWindow() {
 		}
 	});
 
-	const url = isDev
-		? "http://localhost:8081"
-		: `file://${path.join(__dirname, "../dist/index.html")}`;
-
 	win.removeMenu();
-	win.loadURL(url);
+
+	if (isDev) {
+		win.loadURL("http://localhost:8081");
+	} else {
+		win.loadFile(path.join(__dirname, "../dist/index.html"));
+		win.webContents.openDevTools();
+	}
 }
 
 app.whenReady().then(() => {
