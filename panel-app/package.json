@@ -1,5 +1,5 @@
 {
-	"name": "owtunnel-management-panel",
+	"name": "owtunnel-panel",
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",
@@ -86,8 +86,9 @@
 		"vite": "^5.2.10"
 	},
 	"build": {
-		"appId": "com.owtunnel.management-panel",
-		"productName": "OWTunnel Management Panel",
+		"appId": "com.owtunnel.panel",
+		"productName": "OWTunnel Panel",
+		"asar": false,
 		"directories": {
 			"buildResources": "assets",
 			"output": "release"
@@ -95,6 +96,12 @@
 		"files": [
 			"dist/**/*",
 			"electron/**/*"
+		],
+		"extraResources": [
+			{
+				"from": "assets/ffmpeg.dll",
+				"to": "ffmpeg.dll"
+			}
 		],
 		"win": {
 			"target": "nsis"
