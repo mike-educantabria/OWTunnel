@@ -1,10 +1,12 @@
+import 'package:o_w_tunnel/utils/storage.dart';
+
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:ui';
 import 'dart:convert';
-import 'dart:html' as html;
+import '/utils/storage_selector.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -53,8 +55,8 @@ class _AccountPageWidgetState extends State<AccountPageWidget> {
 
   Future<void> _fetchUserData() async {
     try {
-      final token = html.window.localStorage['token'] ?? '';
-      final userId = html.window.localStorage['userId'] ?? '';
+      final token = Storage.token ?? '';
+      final userId = Storage.userId ?? '';
       if (token.isEmpty || userId.isEmpty) return;
 
       final response = await http.get(
@@ -84,8 +86,8 @@ class _AccountPageWidgetState extends State<AccountPageWidget> {
   }
 
   Future<void> _updateUserData() async {
-    final token = html.window.localStorage['token'] ?? '';
-    final userId = html.window.localStorage['userId'] ?? '';
+    final token = Storage.token ?? '';
+    final userId = Storage.userId ?? '';
     if (token.isEmpty || userId.isEmpty) return;
 
     final newEmail = _model.textController1?.text.trim();
@@ -112,8 +114,8 @@ class _AccountPageWidgetState extends State<AccountPageWidget> {
       if (response.statusCode == 200) {
         // Check if email was changed using the original email
         if (_originalEmail != null && _originalEmail != newEmail) {
-          html.window.localStorage.remove('token');
-          html.window.localStorage.remove('userId');
+          Storage.clearToken();
+          Storage.clearUserId();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Email updated. Please log in again.')),
           );
@@ -137,8 +139,8 @@ class _AccountPageWidgetState extends State<AccountPageWidget> {
   }
 
   Future<void> _changePassword() async {
-    final token = html.window.localStorage['token'] ?? '';
-    final userId = html.window.localStorage['userId'] ?? '';
+    final token = Storage.token ?? '';
+    final userId = Storage.userId ?? '';
     final currentPassword = _model.textController5?.text ?? '';
     final newPassword = _model.textController6?.text ?? '';
     final confirmPassword = _model.textController7?.text ?? '';
@@ -213,8 +215,8 @@ class _AccountPageWidgetState extends State<AccountPageWidget> {
   }
 
   void _logout() {
-    html.window.localStorage.remove('token');
-    html.window.localStorage.remove('userId');
+    Storage.clearToken();
+    Storage.clearUserId();
     context.go('/loginPage');
   }
 
