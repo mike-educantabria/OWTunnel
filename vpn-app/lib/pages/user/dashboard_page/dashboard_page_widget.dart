@@ -1,3 +1,6 @@
+import 'package:o_w_tunnel/utils/device_info.dart';
+import 'package:o_w_tunnel/utils/storage.dart';
+
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -6,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
-import 'dart:html' as html;
+import '/utils/storage_selector.dart';
 import 'package:http/http.dart' as http;
 import 'dashboard_page_model.dart';
 export 'dashboard_page_model.dart';
@@ -115,8 +118,8 @@ class _DashboardPageWidgetState extends State<DashboardPageWidget> {
   }
 
   Future<Subscription?> fetchUserSubscription() async {
-    final token = html.window.localStorage['token'] ?? '';
-    final userId = html.window.localStorage['userId'] ?? '';
+    final token = Storage.token ?? '';
+    final userId = Storage.userId ?? '';
     if (token.isEmpty || userId.isEmpty) return null;
     final response = await http.get(
       Uri.parse('http://localhost:8080/api/v1/subscriptions'),
@@ -139,11 +142,11 @@ class _DashboardPageWidgetState extends State<DashboardPageWidget> {
     required VpnServer server,
     required String status,
   }) async {
-    final token = html.window.localStorage['token'] ?? '';
-    final userId = html.window.localStorage['userId'] ?? '';
+    final token = Storage.token ?? '';
+    final userId = Storage.userId ?? '';
     if (token.isEmpty || userId.isEmpty) return null;
 
-    final deviceInfo = html.window.navigator.userAgent;
+    final deviceInfo = await DeviceInfo.getUserAgent();
 
     final body = jsonEncode({
       "userId": int.tryParse(userId),
@@ -173,11 +176,11 @@ class _DashboardPageWidgetState extends State<DashboardPageWidget> {
     required VpnServer server,
     required String status,
   }) async {
-    final token = html.window.localStorage['token'] ?? '';
-    final userId = html.window.localStorage['userId'] ?? '';
+    final token = Storage.token ?? '';
+    final userId = Storage.userId ?? '';
     if (token.isEmpty || userId.isEmpty) return;
 
-    final deviceInfo = html.window.navigator.userAgent;
+    final deviceInfo = await DeviceInfo.getUserAgent();
 
     final body = jsonEncode({
       "userId": int.tryParse(userId),

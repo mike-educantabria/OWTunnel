@@ -1,9 +1,10 @@
 import 'package:http/http.dart' as http;
+import 'package:o_w_tunnel/utils/storage.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:convert';
-import 'dart:html' as html;
+import '/utils/storage_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -68,9 +69,9 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
         final token = data['token'];
         final user = data['user'];
         if (token != null) {
-          html.window.localStorage['token'] = token;
+          Storage.saveToken(token);
           if (user != null && user['id'] != null) {
-            html.window.localStorage['userId'] = user['id'].toString();
+           Storage.saveUserId(user['id'].toString());
           }
           if (!mounted) return;
           context.go('/dashboardPage');

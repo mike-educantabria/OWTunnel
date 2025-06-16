@@ -1,3 +1,5 @@
+import 'package:o_w_tunnel/utils/storage.dart';
+
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -7,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
-import 'dart:html' as html;
+import '/utils/storage_selector.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'subscription_page_model.dart';
@@ -103,7 +105,7 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
   }
 
   Future<List<Plan>> fetchPlans() async {
-    final token = html.window.localStorage['token'] ?? '';
+    final token = Storage.token ?? '';
     final response = await http.get(
       Uri.parse('http://localhost:8080/api/v1/plans'),
       headers: {
@@ -122,8 +124,8 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
   }
 
   Future<Subscription?> fetchCurrentSubscription() async {
-    final token = html.window.localStorage['token'] ?? '';
-    final userId = html.window.localStorage['userId'] ?? '';
+    final token = Storage.token ?? '';
+    final userId = Storage.userId ?? '';
     if (token.isEmpty || userId.isEmpty) return null;
     final response = await http.get(
       Uri.parse('http://localhost:8080/api/v1/subscriptions'),
@@ -141,7 +143,7 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
   }
 
   Future<void> updateSubscription(Subscription sub, {String? status, bool? autoRenew}) async {
-    final token = html.window.localStorage['token'] ?? '';
+    final token = Storage.token ?? '';
     final body = jsonEncode({
       "userId": sub.userId,
       "planId": sub.planId,
@@ -169,8 +171,8 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
   }
 
   Future<void> subscribeToPlan(Plan plan) async {
-    final token = html.window.localStorage['token'] ?? '';
-    final userId = html.window.localStorage['userId'] ?? '';
+    final token = Storage.token ?? '';
+    final userId = Storage.userId ?? '';
     if (token.isEmpty || userId.isEmpty) return;
     // Calcular expiresAt sumando durationDays a la fecha actual
     final now = DateTime.now();
