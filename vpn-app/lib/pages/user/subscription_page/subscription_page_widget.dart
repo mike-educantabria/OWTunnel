@@ -6,8 +6,69 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'dart:html' as html;
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'subscription_page_model.dart';
 export 'subscription_page_model.dart';
+
+class Plan {
+  final int id;
+  final String name;
+  final String description;
+  final double price;
+  final String currency;
+  final int durationDays;
+  final bool isActive;
+
+  Plan({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.price,
+    required this.currency,
+    required this.durationDays,
+    required this.isActive,
+  });
+
+  factory Plan.fromJson(Map<String, dynamic> json) => Plan(
+        id: json['id'],
+        name: json['name'],
+        description: json['description'] ?? '',
+        price: (json['price'] as num).toDouble(),
+        currency: json['currency'],
+        durationDays: json['duration_days'],
+        isActive: json['is_active'],
+      );
+}
+
+class Subscription {
+  final int id;
+  final int userId;
+  final int planId;
+  final String status;
+  final bool autoRenew;
+  final String? expiresAt;
+
+  Subscription({
+    required this.id,
+    required this.userId,
+    required this.planId,
+    required this.status,
+    required this.autoRenew,
+    this.expiresAt,
+  });
+
+  factory Subscription.fromJson(Map<String, dynamic> json) => Subscription(
+        id: json['id'],
+        userId: json['user_id'],
+        planId: json['plan_id'],
+        status: json['status'],
+        autoRenew: json['auto_renew'],
+        expiresAt: json['expires_at'],
+      );
+}
 
 class SubscriptionPageWidget extends StatefulWidget {
   const SubscriptionPageWidget({super.key});
@@ -23,17 +84,121 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
   late SubscriptionPageModel _model;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  late Future<List<Plan>> _plansFuture;
+  late Future<Subscription?> _currentSubscriptionFuture;
+
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => SubscriptionPageModel());
     _model.switchValue = false;
+    _plansFuture = fetchPlans();
+    _currentSubscriptionFuture = fetchCurrentSubscription();
   }
 
   @override
   void dispose() {
     _model.dispose();
     super.dispose();
+  }
+
+  Future<List<Plan>> fetchPlans() async {
+    final token = html.window.localStorage['token'] ?? '';
+    final response = await http.get(
+      Uri.parse('http://localhost:8080/api/v1/plans'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      return data
+          .map((json) => Plan.fromJson(json))
+          .where((p) => p.isActive)
+          .toList();
+    }
+    throw Exception('Error loading plans');
+  }
+
+  Future<Subscription?> fetchCurrentSubscription() async {
+    final token = html.window.localStorage['token'] ?? '';
+    final userId = html.window.localStorage['userId'] ?? '';
+    if (token.isEmpty || userId.isEmpty) return null;
+    final response = await http.get(
+      Uri.parse('http://localhost:8080/api/v1/subscriptions'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      final userSubs = data
+          .map((json) => Subscription.fromJson(json))
+          .where((sub) => sub.userId.toString() == userId && sub.status == "ACTIVE")
+          .toList();
+      return userSubs.isNotEmpty ? userSubs.first : null;
+    }
+    return null;
+  }
+
+  Future<void> updateSubscription(Subscription sub, {String? status, bool? autoRenew}) async {
+    final token = html.window.localStorage['token'] ?? '';
+    final body = jsonEncode({
+      "userId": sub.userId,
+      "planId": sub.planId,
+      "status": status ?? sub.status,
+      "autoRenew": autoRenew ?? sub.autoRenew,
+      "expiresAt": sub.expiresAt,
+    });
+    final response = await http.put(
+      Uri.parse('http://localhost:8080/api/v1/subscriptions/${sub.id}'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: body,
+    );
+    if (response.statusCode == 200) {
+      setState(() {
+        _currentSubscriptionFuture = fetchCurrentSubscription();
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error updating subscription')),
+      );
+    }
+  }
+
+  Future<void> subscribeToPlan(Plan plan) async {
+    final token = html.window.localStorage['token'] ?? '';
+    final userId = html.window.localStorage['userId'] ?? '';
+    if (token.isEmpty || userId.isEmpty) return;
+    // Calcular expiresAt sumando durationDays a la fecha actual
+    final now = DateTime.now();
+    final expiresAt = now.add(Duration(days: plan.durationDays));
+    final body = jsonEncode({
+      "userId": int.parse(userId),
+      "planId": plan.id,
+      "status": "ACTIVE",
+      "autoRenew": false,
+      "expiresAt": expiresAt.toIso8601String(),
+    });
+    final response = await http.post(
+      Uri.parse('http://localhost:8080/api/v1/subscriptions'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: body,
+    );
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      setState(() {
+        _currentSubscriptionFuture = fetchCurrentSubscription();
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error subscribing to plan')),
+      );
+    }
   }
 
   @override
@@ -84,15 +249,48 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
           child: Padding(
             padding: EdgeInsets.all(16.0),
             child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Current Plan Section
-                  _buildCurrentPlan(context),
-                  // Available Plans Section
-                  _buildAvailablePlans(context),
-                ].divide(SizedBox(height: 12.0)),
+              child: FutureBuilder<List<Plan>>(
+                future: _plansFuture,
+                builder: (context, plansSnapshot) {
+                  if (plansSnapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (plansSnapshot.hasError) {
+                    return Center(child: Text('Error loading plans'));
+                  }
+                  final plans = plansSnapshot.data ?? [];
+                  return FutureBuilder<Subscription?>(
+                    future: _currentSubscriptionFuture,
+                    builder: (context, subSnapshot) {
+                      if (subSnapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      if (subSnapshot.hasError) {
+                        return Center(child: Text('Error loading subscription'));
+                      }
+                      final subscription = subSnapshot.data;
+                      Plan? currentPlan;
+                      if (subscription != null) {
+                        if (plans.isNotEmpty) {
+                          currentPlan = plans.firstWhere(
+                            (plan) => plan.id == subscription.planId,
+                            orElse: () => plans.first,
+                          );
+                        } else {
+                          currentPlan = null;
+                        }
+                      }
+                      return Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildCurrentPlan(context, currentPlan, subscription),
+                          _buildAvailablePlans(context, plans, currentPlan, subscription),
+                        ].divide(SizedBox(height: 12.0)),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ),
@@ -101,7 +299,10 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
     );
   }
 
-  Widget _buildCurrentPlan(BuildContext context) {
+  Widget _buildCurrentPlan(BuildContext context, Plan? plan, Subscription? subscription) {
+    if (plan == null || subscription == null) {
+      return SizedBox.shrink();
+    }
     return Align(
       alignment: AlignmentDirectional(0.0, 0.0),
       child: Padding(
@@ -184,7 +385,7 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'Premium Plan',
+                                  plan.name,
                                   style: FlutterFlowTheme.of(context)
                                       .titleMedium
                                       .override(
@@ -206,7 +407,9 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
                               ],
                             ),
                             Text(
-                              'Your subscription is active until 15 June 2024.',
+                              subscription.expiresAt != null
+                                  ? 'Your subscription is active until ${DateFormat('d MMMM yyyy').format(DateTime.parse(subscription.expiresAt!))}.'
+                                  : 'Your subscription is active.',
                               style: FlutterFlowTheme.of(context)
                                   .bodyMedium
                                   .override(
@@ -227,7 +430,7 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  '\$9.99 / 30 days',
+                                  '${plan.price.toStringAsFixed(2)} ${plan.currency} / ${plan.durationDays} days',
                                   style: FlutterFlowTheme.of(context)
                                       .bodyLarge
                                       .override(
@@ -314,10 +517,9 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
                                   ),
                             ),
                             Switch(
-                              value: _model.switchValue!,
-                              onChanged: (newValue) async {
-                                safeSetState(
-                                    () => _model.switchValue = newValue!);
+                              value: subscription.autoRenew,
+                              onChanged: (value) {
+                                updateSubscription(subscription, autoRenew: value);
                               },
                               activeColor: FlutterFlowTheme.of(context).primary,
                               activeTrackColor:
@@ -331,7 +533,7 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
                         ),
                         FFButtonWidget(
                           onPressed: () {
-                            // Cancel subscription logic here
+                            updateSubscription(subscription, status: "CANCELLED");
                           },
                           text: 'Cancel',
                           options: FFButtonOptions(
@@ -367,7 +569,11 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
     );
   }
 
-  Widget _buildAvailablePlans(BuildContext context) {
+  Widget _buildAvailablePlans(
+      BuildContext context, List<Plan> plans, Plan? currentPlan, Subscription? subscription) {
+    final availablePlans =
+        plans.where((plan) => plan.id != currentPlan?.id).toList();
+    final hasActiveSubscription = currentPlan != null && subscription != null;
     return Align(
       alignment: AlignmentDirectional(0.0, 0.0),
       child: Padding(
@@ -419,45 +625,24 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
                     thickness: 2.0,
                     color: FlutterFlowTheme.of(context).alternate,
                   ),
-                  _buildPlanCard(
-                    context,
-                    title: 'Basic Plan',
-                    description:
-                        'Access to basic features and limited content.',
-                    price: '\$4.99 / 30 days',
-                    buttonColor: FlutterFlowTheme.of(context).primary,
-                    buttonTextColor: FlutterFlowTheme.of(context).info,
-                    onPressed: () {
-                      // Subscribe to Basic Plan logic
-                    },
-                  ),
-                  SizedBox(height: 6.0),
-                  _buildPlanCard(
-                    context,
-                    title: 'Premium Plan',
-                    description:
-                        'Full access to all features and premium content.',
-                    price: '\$9.99 / 30 days',
-                    buttonColor: FlutterFlowTheme.of(context).accent1,
-                    buttonTextColor: FlutterFlowTheme.of(context).secondaryText,
-                    onPressed: () {
-                      // Subscribe to Premium Plan logic
-                    },
-                  ),
-                  SizedBox(height: 6.0),
-                  _buildPlanCard(
-                    context,
-                    title: 'Family Plan',
-                    description:
-                        'Share with up to 5 family members with all premium features.',
-                    price: '\$19.99 / 30 days',
-                    buttonColor: FlutterFlowTheme.of(context).primary,
-                    buttonTextColor: FlutterFlowTheme.of(context).info,
-                    onPressed: () {
-                      // Subscribe to Family Plan logic
-                    },
-                  ),
-                ].divide(SizedBox(height: 8.0)),
+                  ...availablePlans.map((plan) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: _buildPlanCard(
+                          context,
+                          title: plan.name,
+                          description: plan.description,
+                          price:
+                              '${plan.price.toStringAsFixed(2)} ${plan.currency} / ${plan.durationDays} days',
+                          buttonColor: FlutterFlowTheme.of(context).primary,
+                          buttonTextColor: FlutterFlowTheme.of(context).info,
+                          onPressed: hasActiveSubscription
+                              ? null
+                              : () {
+                                  subscribeToPlan(plan);
+                                },
+                        ),
+                      )),
+                ],
               ),
             ),
           ),
@@ -473,7 +658,7 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
     required String price,
     required Color buttonColor,
     required Color buttonTextColor,
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
   }) {
     return Container(
       width: double.infinity,
@@ -563,6 +748,7 @@ class _SubscriptionPageWidgetState extends State<SubscriptionPageWidget> {
                         ),
                     elevation: 0.0,
                     borderRadius: BorderRadius.circular(8.0),
+                    disabledColor: Colors.grey,
                   ),
                 ),
               ],

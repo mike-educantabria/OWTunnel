@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'settings_page_model.dart';
-import '../../../main.dart'; // Import main.dart for theme mode
+import '../../../main.dart';
 export 'settings_page_model.dart';
 
 class SettingsPageWidget extends StatefulWidget {
@@ -25,6 +25,12 @@ class SettingsPageWidget extends StatefulWidget {
 class _SettingsPageWidgetState extends State<SettingsPageWidget> {
   late SettingsPageModel _model;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  bool _appearanceExpanded = true;
+  bool _notificationsExpanded = true;
+  bool _privacyExpanded = true;
+  bool _languageExpanded = true;
+  bool _aboutExpanded = true;
 
   @override
   void initState() {
@@ -90,11 +96,66 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildAppearanceSection(context),
-                  _buildNotificationsSection(context),
-                  _buildPrivacySection(context),
-                  _buildLanguageSection(context),
-                  _buildAboutSection(context),
+                  _buildExpandableSection(
+                    context,
+                    expanded: _appearanceExpanded,
+                    onTap: () {
+                      setState(() {
+                        _appearanceExpanded = !_appearanceExpanded;
+                      });
+                    },
+                    title: 'Appearance',
+                    icon: Icons.brightness_6_outlined,
+                    child: _buildAppearanceSection(context),
+                  ),
+                  _buildExpandableSection(
+                    context,
+                    expanded: _notificationsExpanded,
+                    onTap: () {
+                      setState(() {
+                        _notificationsExpanded = !_notificationsExpanded;
+                      });
+                    },
+                    title: 'Notifications',
+                    icon: Icons.notifications_outlined,
+                    child: _buildNotificationsSection(context),
+                  ),
+                  _buildExpandableSection(
+                    context,
+                    expanded: _privacyExpanded,
+                    onTap: () {
+                      setState(() {
+                        _privacyExpanded = !_privacyExpanded;
+                      });
+                    },
+                    title: 'Privacy & Security',
+                    icon: Icons.fingerprint,
+                    child: _buildPrivacySection(context),
+                  ),
+                  _buildExpandableSection(
+                    context,
+                    expanded: _languageExpanded,
+                    onTap: () {
+                      setState(() {
+                        _languageExpanded = !_languageExpanded;
+                      });
+                    },
+                    title: 'Language',
+                    icon: Icons.translate,
+                    child: _buildLanguageSection(context),
+                  ),
+                  _buildExpandableSection(
+                    context,
+                    expanded: _aboutExpanded,
+                    onTap: () {
+                      setState(() {
+                        _aboutExpanded = !_aboutExpanded;
+                      });
+                    },
+                    title: 'About & Support',
+                    icon: Icons.info_outline,
+                    child: _buildAboutSection(context),
+                  ),
                 ].divide(SizedBox(height: 12.0)),
               ),
             ),
@@ -104,67 +165,133 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
     );
   }
 
-  Widget _buildAppearanceSection(BuildContext context) {
-    return _buildSettingsCard(
-      context,
-      title: 'Appearance',
-      icon: Icons.brightness_6_outlined,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.brightness_6_outlined,
-                    color: FlutterFlowTheme.of(context).primaryText,
-                    size: 24.0),
-                SizedBox(width: 8.0),
-                Text(
-                  'Theme Mode',
-                  style: FlutterFlowTheme.of(context).bodyMedium,
+  Widget _buildExpandableSection(
+    BuildContext context, {
+    required bool expanded,
+    required VoidCallback onTap,
+    required String title,
+    required IconData icon,
+    required Widget child,
+  }) {
+    return Align(
+      alignment: AlignmentDirectional(0.0, 0.0),
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+        child: Container(
+          width: 800.0,
+          decoration: BoxDecoration(
+            color: FlutterFlowTheme.of(context).secondaryBackground,
+            borderRadius: BorderRadius.circular(12.0),
+            border: Border.all(
+              color: FlutterFlowTheme.of(context).alternate,
+              width: 1.0,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: FlutterFlowTheme.of(context).titleMedium.override(
+                              font: GoogleFonts.interTight(
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .titleMedium
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .titleMedium
+                                    .fontStyle,
+                              ),
+                              letterSpacing: 0.0,
+                            ),
+                      ),
+                      Icon(
+                        expanded
+                            ? Icons.keyboard_arrow_up_rounded
+                            : Icons.keyboard_arrow_down_rounded,
+                        color: FlutterFlowTheme.of(context).primaryText,
+                        size: 28.0,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (expanded) ...[
+                Divider(
+                  thickness: 2.0,
+                  color: FlutterFlowTheme.of(context).alternate,
+                  height: 0,
+                ),
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: child,
                 ),
               ],
-            ),
-            FlutterFlowDropDown<String>(
-              controller: _model.dropDownValueController1 ??=
-                  FormFieldController<String>(null),
-              options: ['Light', 'Dark', 'System'],
-              onChanged: (val) {
-                safeSetState(() => _model.dropDownValue1 = val);
-                if (val == 'Light') {
-                  MyApp.of(context).setThemeMode(ThemeMode.light);
-                } else if (val == 'Dark') {
-                  MyApp.of(context).setThemeMode(ThemeMode.dark);
-                } else {
-                  MyApp.of(context).setThemeMode(ThemeMode.system);
-                }
-              },
-              width: 140.0,
-              height: 40.0,
-              textStyle: FlutterFlowTheme.of(context).bodyMedium,
-              hintText: 'System',
-              fillColor: FlutterFlowTheme.of(context).alternate,
-              elevation: 0.0,
-              borderColor: Colors.transparent,
-              borderWidth: 0.0,
-              borderRadius: 8.0,
-              margin: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-              hidesUnderline: true,
-              isOverButton: false,
-              isSearchable: false,
-              isMultiSelect: false,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAppearanceSection(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.brightness_6_outlined,
+                color: FlutterFlowTheme.of(context).primaryText, size: 24.0),
+            SizedBox(width: 8.0),
+            Text(
+              'Theme Mode',
+              style: FlutterFlowTheme.of(context).bodyMedium,
             ),
           ],
+        ),
+        FlutterFlowDropDown<String>(
+          controller: _model.dropDownValueController1 ??=
+              FormFieldController<String>(null),
+          options: ['Light', 'Dark', 'System'],
+          onChanged: (val) {
+            safeSetState(() => _model.dropDownValue1 = val);
+            if (val == 'Light') {
+              MyApp.of(context).setThemeMode(ThemeMode.light);
+            } else if (val == 'Dark') {
+              MyApp.of(context).setThemeMode(ThemeMode.dark);
+            } else {
+              MyApp.of(context).setThemeMode(ThemeMode.system);
+            }
+          },
+          width: 140.0,
+          height: 40.0,
+          textStyle: FlutterFlowTheme.of(context).bodyMedium,
+          hintText: 'System',
+          fillColor: FlutterFlowTheme.of(context).alternate,
+          elevation: 0.0,
+          borderColor: Colors.transparent,
+          borderWidth: 0.0,
+          borderRadius: 8.0,
+          margin: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
+          hidesUnderline: true,
+          isOverButton: false,
+          isSearchable: false,
+          isMultiSelect: false,
         ),
       ],
     );
   }
 
   Widget _buildNotificationsSection(BuildContext context) {
-    return _buildSettingsCard(
-      context,
-      title: 'Notifications',
-      icon: Icons.notifications_outlined,
+    return Column(
       children: [
         _buildSwitchRow(
           context,
@@ -188,10 +315,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
   }
 
   Widget _buildPrivacySection(BuildContext context) {
-    return _buildSettingsCard(
-      context,
-      title: 'Privacy & Security',
-      icon: Icons.fingerprint,
+    return Column(
       children: [
         _buildSwitchRow(
           context,
@@ -215,63 +339,52 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
   }
 
   Widget _buildLanguageSection(BuildContext context) {
-    return _buildSettingsCard(
-      context,
-      title: 'Language',
-      icon: Icons.translate,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Icon(Icons.translate,
-                    color: FlutterFlowTheme.of(context).primaryText,
-                    size: 24.0),
-                SizedBox(width: 8.0),
-                Text(
-                  'App Language',
-                  style: FlutterFlowTheme.of(context).bodyMedium,
-                ),
-              ],
-            ),
-            FlutterFlowDropDown<String>(
-              controller: _model.dropDownValueController2 ??=
-                  FormFieldController<String>(null),
-              options: [
-                'English (US)',
-                'Spanish',
-                'French',
-                'German',
-                'Chinese'
-              ],
-              onChanged: (val) =>
-                  safeSetState(() => _model.dropDownValue2 = val),
-              width: 140.0,
-              height: 40.0,
-              textStyle: FlutterFlowTheme.of(context).bodyMedium,
-              hintText: 'English (US)',
-              fillColor: FlutterFlowTheme.of(context).alternate,
-              elevation: 0.0,
-              borderColor: Colors.transparent,
-              borderWidth: 0.0,
-              borderRadius: 8.0,
-              margin: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-              hidesUnderline: true,
-              isSearchable: false,
-              isMultiSelect: false,
+            Icon(Icons.translate,
+                color: FlutterFlowTheme.of(context).primaryText, size: 24.0),
+            SizedBox(width: 8.0),
+            Text(
+              'App Language',
+              style: FlutterFlowTheme.of(context).bodyMedium,
             ),
           ],
+        ),
+        FlutterFlowDropDown<String>(
+          controller: _model.dropDownValueController2 ??=
+              FormFieldController<String>(null),
+          options: [
+            'English (US)',
+            'Spanish',
+            'French',
+            'German',
+            'Chinese'
+          ],
+          onChanged: (val) =>
+              safeSetState(() => _model.dropDownValue2 = val),
+          width: 140.0,
+          height: 40.0,
+          textStyle: FlutterFlowTheme.of(context).bodyMedium,
+          hintText: 'English (US)',
+          fillColor: FlutterFlowTheme.of(context).alternate,
+          elevation: 0.0,
+          borderColor: Colors.transparent,
+          borderWidth: 0.0,
+          borderRadius: 8.0,
+          margin: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
+          hidesUnderline: true,
+          isSearchable: false,
+          isMultiSelect: false,
         ),
       ],
     );
   }
 
   Widget _buildAboutSection(BuildContext context) {
-    return _buildSettingsCard(
-      context,
-      title: 'About & Support',
-      icon: Icons.info_outline,
+    return Column(
       children: [
         _buildLinkRow(
           context,
@@ -325,72 +438,6 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildSettingsCard(BuildContext context,
-      {required String title,
-      required IconData icon,
-      required List<Widget> children}) {
-    return Align(
-      alignment: AlignmentDirectional(0.0, 0.0),
-      child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
-        child: Container(
-          width: 800.0,
-          decoration: BoxDecoration(
-            color: FlutterFlowTheme.of(context).secondaryBackground,
-            borderRadius: BorderRadius.circular(12.0),
-            border: Border.all(
-              color: FlutterFlowTheme.of(context).alternate,
-              width: 1.0,
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      title,
-                      style: FlutterFlowTheme.of(context).titleMedium.override(
-                            font: GoogleFonts.interTight(
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .titleMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .titleMedium
-                                  .fontStyle,
-                            ),
-                            letterSpacing: 0.0,
-                          ),
-                    ),
-                    FlutterFlowIconButton(
-                      buttonSize: 40.0,
-                      fillColor: Colors.transparent,
-                      icon: Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: FlutterFlowTheme.of(context).primaryText,
-                        size: 24.0,
-                      ),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-                Divider(
-                  thickness: 2.0,
-                  color: FlutterFlowTheme.of(context).alternate,
-                ),
-                ...children,
-              ].divide(SizedBox(height: 8.0)),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
